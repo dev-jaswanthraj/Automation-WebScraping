@@ -6,7 +6,6 @@ class App(tk.Tk):
     def __init__(self) -> None:
 
         self.xlobj = XlDataBase()
-        self.xlobj.set_worksheet()
 
 
         super().__init__()
@@ -35,8 +34,6 @@ class App(tk.Tk):
         if messagebox.askokcancel("Exit", "Are you Sure?"):
             self.destroy()
 
-
-
     def signin(self):
         print("Sign In Page")
         self.signin_page = tk.Toplevel(self)
@@ -44,6 +41,26 @@ class App(tk.Tk):
 
         self.signin_label = tk.Label(self.signin_page, text="SIGN IN", font=('Helvetica', 20), pady=20)
         self.signin_label.pack()
+
+        self.signinform = tk.Frame(self.signin_page)
+        self.username = tk.Label(self.signinform, text="Full Name", font=('Helvetica', 16))
+        self.username.grid(row=0, column=0, pady=10)
+        self.password = tk.Label(self.signinform, text="Password", font=('Helvetica', 16))
+        self.password.grid(row=1, column=0, pady=10)
+
+        self.username_data = StringVar()
+        self.password_data = StringVar()
+
+        self.username_field = tk.Entry(self.signinform, textvariable=self.username_data, justify=CENTER, border=0)
+        self.username_field.grid(row=0, column=1, padx=5)
+        self.password_field = tk.Entry(self.signinform, textvariable=self.password_data, justify=CENTER, border=0)
+        self.password_field.grid(row=1, column=1, padx=5)
+
+        self.signinform.pack()
+
+        self.submit = tk.Button(self.signin_page, text="Sign In", foreground="White", bg="#96c93d", font=('Helvetica', 20), border=0, command=self.auth_user)
+        self.submit.pack(pady=20)
+
 
     def signup(self):
         print("Sign Up Page")
@@ -67,19 +84,17 @@ class App(tk.Tk):
 
         self.fullname_field = tk.Entry(self.form, textvariable=self.fullname_data, justify=CENTER, border=0)
         self.fullname_field.grid(row=0, column=1, pady=10)
-        self.pwd1_field = tk.Entry(self.form, textvariable=self.pwd1_data, justify=CENTER)
+        self.pwd1_field = tk.Entry(self.form, textvariable=self.pwd1_data, justify=CENTER, border=0)
         self.pwd1_field.grid(row=1, column=1, pady=10)
-        self.pwd2_field = tk.Entry(self.form, textvariable=self.pwd2_data, justify=CENTER)
-        self.pwd2_field.grid(row=2, column=1, pady=10)
+        self.pwd2_field = tk.Entry(self.form, textvariable=self.pwd2_data, justify=CENTER, border=0)
+        self.pwd2_field.grid(row=2, column=1, pady=10, padx=5)
 
         
 
         self.form.pack()
-        self.form.pack_propagate(0)
 
-        self.submit = tk.Button(self.signup_page, text="Register", foreground="White", bg="#38ef7d", font=('Helvetica', 20), border=0, command=self.get_data_sign_up)
+        self.submit = tk.Button(self.signup_page, text="Register", foreground="White", bg="#96c93d", font=('Helvetica', 20), border=0, command=self.get_data_sign_up)
         self.submit.pack(pady=20)
-
 
     def get_data_sign_up(self):
         if self.fullname_data.get() != "" and self.pwd1_data.get() != "" and self.pwd2_data.get() != "":
@@ -96,11 +111,37 @@ class App(tk.Tk):
                 self.pwd2_data.set("")
         else:
             messagebox.showinfo("Error", "All Fields Should be Filled", parent=self.signup_page)
+            #signup_page.after(10000, lambda:signup_page.destroy())
 
-
-
+    def auth_user(self):
         
-        #signup_page.after(10000, lambda:signup_page.destroy())
+
+        if self.username_data.get() == "" or self.password_data.get() == "":
+            messagebox.showinfo("Error", "All field are to be filled.", parent=self.signin_page)
+        else:    
+            self.username_token = False
+            for item in self.xlobj.get_data():
+                if self.username_data.get() in item.values():
+                    self.username_token = True
+                    break
+            if self.username_token:
+                if item['Password'] == self.password_data.get():
+                    pass
+                else:
+                    self.password_data.set("")
+                    self.password_field.focus_set()
+                    messagebox.showinfo("Error", "Incorrect Password", parent=self.signin_page)
+            elif not self.username_token:
+                self.username_data.set("")
+                self.password_data.set("")
+                self.username_field.focus_set()
+                messagebox.showinfo("Error", "Invalid UserName", parent=self.signin_page)
+            
+        
+                    
+
+
+
 
 if __name__ == "__main__":
     app = App()

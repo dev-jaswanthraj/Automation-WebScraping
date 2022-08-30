@@ -5,32 +5,36 @@ from openpyxl.utils import get_column_letter
 
 
 class XlDataBase():
-    __user_fields = ["FullName", "UserName", "Password"]
-    __total_user = 2
-    __workbook_created = False
-    __worksheet_created = False
     def __init__(self) -> None:
-        if not XlDataBase.__workbook_created:
-            self.wb = Workbook()
-            self.__workbook_created = True
-        else:
-            self.wb = load_workbook("userdata.xlsx")
-
-    def set_worksheet(self):
-        if not XlDataBase.__worksheet_created:
-            self.ws = self.wb.active
-            self.ws.title = "User Detail"
-            self.ws.append(XlDataBase.__user_fields)
-            self.wb.save("userdata.xlsx")
+       self.wb = load_workbook("userdata.xlsx")
+       self.ws = self.wb.active
 
     def set_data(self, fullname:str, password:str):
-        self.username = "User"+str(XlDataBase.__total_user-1)
-        self.ws['A'+str(XlDataBase.__total_user-1)] = fullname
-        self.ws['B'+str(XlDataBase.__total_user-1)] = self.username
-        self.ws['C'+str(XlDataBase.__total_user-1)] = password
+        self.id = self.ws.max_row
+        self.username = "User"+ str(self.id)
+        self.ws['A'+str(self.id+1)] = fullname
+        self.ws['B'+str(self.id+1)] = self.username
+        self.ws['C'+str(self.id+1)] = password
         self.wb.save("userdata.xlsx")
-        XlDataBase.__total_user += 1
         return self.username
+
+    def get_data(self) -> list:
+        print(self.ws.max_column, self.ws.max_row)
+        d = {
+            '1':'FullName',
+            '2':'UserName',
+            '3':'Password'
+        }
+        result = []
+        for row in range(2, self.ws.max_row+1):
+            temp, count = {}, 1
+            for col in range(1, self.ws.max_column+1):
+                char = get_column_letter(col)
+                temp[d[str(count)]] = self.ws[char+str(row)].value
+                count += 1
+            result.append(temp)
+        return result
+
 
 
 
