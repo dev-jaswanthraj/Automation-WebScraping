@@ -35,12 +35,11 @@ class App(tk.Tk):
     def exit(self):
         if messagebox.askokcancel("Exit", "Are you Sure?"):
             self.destroy()
-    
+
     def logout(self):
         if messagebox.askokcancel("Logout", "Are you Sure?", parent=self.scrapingpage):
             self.scrapingpage.destroy()
             self.deiconify()
-
 
     def signin(self):
         
@@ -69,6 +68,10 @@ class App(tk.Tk):
         self.submit = tk.Button(self.signin_page, text="Sign In", foreground="White", bg="#96c93d", font=('Helvetica', 20), border=0, command=self.auth_user)
         self.submit.pack(pady=20)
 
+        self.back_img = Image.open("images/back-btn.png")
+        self.new_back_img = ImageTk.PhotoImage(self.back_img.resize((80, 40), resample=1))
+        self.back_btn = tk.Button(self.signin_page, image=self.new_back_img, border=0, command=lambda:self.signin_page.destroy())
+        self.back_btn.place(x = 0, y = 0)
 
     def signup(self):
 
@@ -103,6 +106,11 @@ class App(tk.Tk):
 
         self.submit = tk.Button(self.signup_page, text="Register", foreground="White", bg="#96c93d", font=('Helvetica', 20), border=0, command=self.get_data_sign_up)
         self.submit.pack(pady=20)
+
+        self.back_img = Image.open("images/back-btn.png")
+        self.new_back_img = ImageTk.PhotoImage(self.back_img.resize((80, 40), resample=1))
+        self.back_btn = tk.Button(self.signup_page, image=self.new_back_img, border=0, command=lambda: self.signup_page.destroy())
+        self.back_btn.place(x = 0, y = 0)
 
     def get_data_sign_up(self):
         if self.fullname_data.get() != "" and self.pwd1_data.get() != "" and self.pwd2_data.get() != "":
@@ -149,16 +157,20 @@ class App(tk.Tk):
         self.scrapingpage = tk.Toplevel(self)
         self.scrapingpage.geometry('800x400')
 
-        self.nav = tk.Frame(self.scrapingpage)
-
-        self.username_label = tk.Label(self.nav, text="Hello, {}!".format(userData['FullName']), font=('Helvetica', 20))
-        self.username_label.grid(column=0, row=0, pady=5, padx=5, sticky='e')
-
-        self.logout_btn = tk.Button(self.nav, text="Logout",font=("Helvetica", 18), border=0, background="#f64f59", foreground="white", command=self.logout)
-        self.logout_btn.grid(column=1, row=0, padx=20, pady=5)
         
-        self.nav.pack()
+        self.user_img = Image.open("images/usericon.jpg")
+        self.new_user_img = ImageTk.PhotoImage(self.user_img.resize((25, 25), Image.Resampling.LANCZOS))
+        self.user_label = tk.Label(self.scrapingpage, image = self.new_user_img)
+        self.user_label.place(x = 10, y = 15)
+        
+        self.username_label = tk.Label(self.scrapingpage, text="Hello, {}!".format(userData['FullName']), font=('Helvetica', 20))
+        self.username_label.place(x = 42, y = 10)
 
+        self.logout_btn = tk.Button(self.scrapingpage, text="Logout",font=("Helvetica", 18), border=0, background="#f64f59", foreground="white", command=self.logout)
+        self.logout_btn.place(x = 700, y = 10 )
+
+        self.hr = tk.Canvas(self.scrapingpage,width=800, height=2, bg="#bdc3c7").pack(pady=60)
+        
         self.apps = tk.Frame(self.scrapingpage)
 
         self.amazon_img = Image.open("images/amazon.jpg")
@@ -169,16 +181,10 @@ class App(tk.Tk):
         self.flipcart_img = Image.open("images/flipcart.webp")
         self.new_flipcart_img = ImageTk.PhotoImage(self.flipcart_img.resize((75, 75), Image.Resampling.LANCZOS))
         self.flipcart_btn = tk.Button(self.apps, image = self.new_flipcart_img, border=0, pady=20)
-        self.flipcart_btn.grid(column=1, row=0, pady=10, padx=10)
+        self.flipcart_btn.grid(column=2, row=0, pady=10, padx=10)
 
-        self.apps.pack(pady=40)
-
-        
+        self.apps.pack(pady=20)
 
 if __name__ == "__main__":
     app = App()
     app.mainloop()
-
-
-
-
