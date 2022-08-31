@@ -1,13 +1,15 @@
+# from test_selenium import  open_browser_with_amazon
 from xl import XlDataBase
 import tkinter as tk
-from tkinter import CENTER, StringVar, messagebox
+from tkinter import messagebox, StringVar, CENTER
+from tkinter.ttk import *
+from PIL import Image, ImageTk
 
 class App(tk.Tk):
     def __init__(self) -> None:
 
         self.xlobj = XlDataBase()
-
-
+    
         super().__init__()
 
         self.geometry("800x400")
@@ -33,9 +35,15 @@ class App(tk.Tk):
     def exit(self):
         if messagebox.askokcancel("Exit", "Are you Sure?"):
             self.destroy()
+    
+    def logout(self):
+        if messagebox.askokcancel("Logout", "Are you Sure?", parent=self.scrapingpage):
+            self.scrapingpage.destroy()
+            self.deiconify()
+
 
     def signin(self):
-        print("Sign In Page")
+        
         self.signin_page = tk.Toplevel(self)
         self.signin_page.geometry("600x400")
 
@@ -63,7 +71,7 @@ class App(tk.Tk):
 
 
     def signup(self):
-        print("Sign Up Page")
+
         self.signup_page = tk.Toplevel(self)
         self.signup_page.geometry("600x400")
 
@@ -98,7 +106,6 @@ class App(tk.Tk):
 
     def get_data_sign_up(self):
         if self.fullname_data.get() != "" and self.pwd1_data.get() != "" and self.pwd2_data.get() != "":
-            print("Something")
             if self.pwd1_data.get() == self.pwd2_data.get():
                 
                 self.username = self.xlobj.set_data(self.fullname_data.get(), self.pwd1_data.get())
@@ -114,8 +121,7 @@ class App(tk.Tk):
             #signup_page.after(10000, lambda:signup_page.destroy())
 
     def auth_user(self):
-        
-
+    
         if self.username_data.get() == "" or self.password_data.get() == "":
             messagebox.showinfo("Error", "All field are to be filled.", parent=self.signin_page)
         else:    
@@ -126,7 +132,8 @@ class App(tk.Tk):
                     break
             if self.username_token:
                 if item['Password'] == self.password_data.get():
-                    pass
+                    self.signin_page.destroy()
+                    self.webScraping(item)
                 else:
                     self.password_data.set("")
                     self.password_field.focus_set()
@@ -136,12 +143,37 @@ class App(tk.Tk):
                 self.password_data.set("")
                 self.username_field.focus_set()
                 messagebox.showinfo("Error", "Invalid UserName", parent=self.signin_page)
-            
+
+    def webScraping(self, userData):
+        self.withdraw()
+        self.scrapingpage = tk.Toplevel(self)
+        self.scrapingpage.geometry('800x400')
+
+        self.nav = tk.Frame(self.scrapingpage)
+
+        self.username_label = tk.Label(self.nav, text="Hello, {}!".format(userData['FullName']), font=('Helvetica', 20))
+        self.username_label.grid(column=0, row=0, pady=5, padx=5, sticky='e')
+
+        self.logout_btn = tk.Button(self.nav, text="Logout",font=("Helvetica", 18), border=0, background="#f64f59", foreground="white", command=self.logout)
+        self.logout_btn.grid(column=1, row=0, padx=20, pady=5)
         
-                    
+        self.nav.pack()
 
+        self.apps = tk.Frame(self.scrapingpage)
 
+        self.amazon_img = Image.open("images/amazon.jpg")
+        self.new_amazon_img = ImageTk.PhotoImage(self.amazon_img.resize((75, 75), Image.Resampling.LANCZOS))
+        self.amazon_btn = tk.Button(self.apps, image = self.new_amazon_img, border=0)
+        self.amazon_btn.grid(column=0, row=0, pady=10, padx=10)
 
+        self.flipcart_img = Image.open("images/flipcart.webp")
+        self.new_flipcart_img = ImageTk.PhotoImage(self.flipcart_img.resize((75, 75), Image.Resampling.LANCZOS))
+        self.flipcart_btn = tk.Button(self.apps, image = self.new_flipcart_img, border=0, pady=20)
+        self.flipcart_btn.grid(column=1, row=0, pady=10, padx=10)
+
+        self.apps.pack(pady=40)
+
+        
 
 if __name__ == "__main__":
     app = App()

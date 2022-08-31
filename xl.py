@@ -19,7 +19,6 @@ class XlDataBase():
         return self.username
 
     def get_data(self) -> list:
-        print(self.ws.max_column, self.ws.max_row)
         d = {
             '1':'FullName',
             '2':'UserName',
