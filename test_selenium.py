@@ -75,9 +75,9 @@ def open_browser_with_flipkart(name:str):
     search.send_keys(name)
     search.send_keys(Keys.ENTER)
 
-    items = driver.find_elements(By.XPATH, '//div[@class = "_4ddWXP"]')
+    
 
-    print(len(items), items)
+    print(len(driver.find_elements(By.XPATH, '//div[@class = "_4ddWXP"]')), driver.find_elements(By.XPATH, '//div[@class = "_4ddWXP"]'))
 
     print("Hi")
     

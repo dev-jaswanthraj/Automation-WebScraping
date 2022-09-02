@@ -1,9 +1,6 @@
 from openpyxl import Workbook, load_workbook
 from openpyxl.utils import get_column_letter
 
-
-
-
 class XlDataBase():
     def __init__(self) -> None:
        self.wb = load_workbook("userdata.xlsx")
