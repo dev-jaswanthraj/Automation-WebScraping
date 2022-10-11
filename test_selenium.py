@@ -9,8 +9,6 @@ from random import randint
 import time
 
 
-
-
 def check(item, path):
     try:
         test_data = item.find_element(By.XPATH, path)
@@ -54,7 +52,9 @@ def open_browser_with_amazon(name:str):
    
 
     filename = name+str(randint(1, 10000))+".xlsx"
+    print("hi1")
     wb.save(filename)
+    print("hi2")
     driver.close()
     return filename
 
@@ -82,10 +82,6 @@ def open_browser_with_flipkart(name:str):
     print("Hi")
     
 
-
-   
-
-#open_browser_with_flipkart("volley Ball")
 
 
 

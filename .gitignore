@@ -4,6 +4,7 @@ __pycache__/
 images/
 
 *.xlsx
-
+*.pdf
+*.bat
 tcsVenv/
 

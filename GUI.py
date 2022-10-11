@@ -6,8 +6,6 @@ from tkinter import messagebox, StringVar, CENTER
 from tkinter.ttk import *
 from PIL import Image, ImageTk
 import pandas as pd
-import tkinter
-
 class App(tk.Tk):
     def __init__(self) -> None:
 
@@ -24,7 +22,7 @@ class App(tk.Tk):
         self.home_page = tk.Frame(self)
         
 
-        self.sign_in_btn = tk.Button(self.home_page, text=" Sign In ", font=("Helvetica", 18), border=0, background="#2BC0E4", foreground="white", command=self.signin)
+        self.sign_in_btn = tk.Button(self.home_page, text=" Sign In ", font=("Helvetica", 18), border=0, background="#2BC0E4", foreground="white", command=self.signin, name="signin")
         self.sign_in_btn.grid(row=0, column=0, pady=10, sticky=tk.W+tk.E)
 
         self.sign_up_btn = tk.Button(self.home_page, text="Sign Up", font=("Helvetica", 18), border=0, background="#2BC0E4", foreground="white", command=self.signup)
@@ -49,7 +47,7 @@ class App(tk.Tk):
 
     def signin(self):
         
-        self.signin_page = tk.Toplevel(self)
+        self.signin_page = tk.Toplevel(self, name = "signpage")
         self.signin_page.geometry("600x400")
 
         self.signin_label = tk.Label(self.signin_page, text="SIGN IN", font=('Helvetica', 20), pady=20)
@@ -164,22 +162,24 @@ class App(tk.Tk):
         self.result_page = tk.Toplevel(self.data_input_area)
         self.result_page.geometry('800x400')
         self.data_input_area.withdraw()
-
+    
         self.label = tk.Label(self.result_page, text= website+" Result Page", font=('Helvetica', 20), pady=20)
         self.label.pack()
         
-        self.back_btn = tk.Button(self.result_page, image=self.new_back_img, border=0, command=lambda:self.result_page.destroy() )
+        self.back_btn = tk.Button(self.result_page, image=self.new_back_img, border=0, command=lambda:self.scrapingpage.wm_deiconify() or self.result_page.destroy())
         self.back_btn.place(x = 0, y = 0)
         
         self.result_area = tk.Frame(self.result_page)
 
         if website == "Amazon":
             try:
+                self.file_name = open_browser_with_amazon(self.input_data.get())
+                self.scrapingpage.withdraw()
                 self.suc_label = tk.Label(self.result_area, text= "Successfully completed ✔", font=('Helvetica', 20), pady=20, foreground="#96c93d")
                 self.suc_label.grid(column=0, row=0, pady=20)
-                self.file_name = open_browser_with_amazon(self.input_data.get())
                 self.open_btn = tk.Button(self.result_area, text="Open {}".format(self.file_name), foreground="White", bg="#96c93d", font=('Helvetica', 20), border=0, command=self.tkexcel)
                 self.open_btn.grid(column=0, row=1, pady=50)
+                
             except:
                 self.error_label = tk.Label(self.result_area, text="Something Went Wrong",font=('Helvetica', 20), foreground="#f64f59")
                 self.error_label.grid(column=0, row=0, pady=100)
@@ -194,7 +194,7 @@ class App(tk.Tk):
 
         self.back_img = Image.open("images/back-btn.png")
         self.new_back_img = ImageTk.PhotoImage(self.back_img.resize((80, 40), resample=1))
-        self.back_btn = tk.Button(self.win, image=self.new_back_img, border=0, command=lambda:self.result_page.destroy() )
+        self.back_btn = tk.Button(self.win, image=self.new_back_img, border=0, command=lambda:self.scrapingpage.wm_deiconify() or self.result_page.destroy())
         self.back_btn.place(x = 0, y = 0)
 
         self.frame = tk.Frame(self.win)
